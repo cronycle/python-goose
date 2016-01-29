@@ -8,6 +8,8 @@ class HostUtils(object):
         if host is None:
             return None
 
+        host = host.replace("www.", "")    
+
         if host in all_selectors:
             selectors = all_selectors[host]
             if type(selectors) is dict:
