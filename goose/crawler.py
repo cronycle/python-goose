@@ -110,7 +110,9 @@ class Crawler(object):
         self.article.doc = self.cleaner.clean()
 
         # big stuff
-        self.article.top_node = self.extractor.calculate_best_node()
+        # we had to update calculate_best_node() function, because sites with current markup would need to build
+        # tmp node with content from the several nodes
+        self.article.top_node, was_found_by_rule = self.extractor.calculate_best_node()
 
         # if we have a top node
         # let's process it
@@ -127,7 +129,7 @@ class Crawler(object):
                 self.get_images()
 
             # clean_text
-            self.article.content_html = self.formatter.content_html()
+            self.article.content_html = self.formatter.content_html(should_perform_processing= not was_found_by_rule)
 
         # cleanup tmp file
         self.relase_resources()

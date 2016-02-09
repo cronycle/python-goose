@@ -248,11 +248,11 @@ class ContentExtractor(object):
     def calculate_best_node(self):
         top_host_node_from_known_tags = self.get_top_host_node_from_known_tags()
         if top_host_node_from_known_tags is not None:
-            return top_host_node_from_known_tags
+            return top_host_node_from_known_tags, True
 
         top_node_from_known_tags = self.get_top_node_from_known_tags()
         if top_node_from_known_tags is not None:
-            return top_node_from_known_tags
+            return top_node_from_known_tags, True
 
         doc = self.article.doc
         top_node = None
@@ -324,7 +324,7 @@ class ContentExtractor(object):
             if top_node is None:
                 top_node = e
 
-        return top_node
+        return top_node, False
 
     def set_known_host_content_tags(self):
         self.known_host_content_tags = HostUtils.host_selectors(_Const().get_known_host_content_tags,
@@ -592,11 +592,13 @@ class ContentExtractor(object):
 
         self.build_tag_paths(node, 'img', 'src')
         self.build_tag_paths(node, 'a', 'href')
-        allowed_tags = ['p', 'img', 'ul', 'ol', 'h2', 'h3', 'h4', 'h5', 'h6',
-                        'strong', 'em', 'blockquote']
 
+        # if node was exctracted by rule, we do not want to clean it. Just return.
         if self.known_host_content_tags:
             return node
+
+        allowed_tags = ['p', 'img', 'ul', 'ol', 'h2', 'h3', 'h4', 'h5', 'h6',
+                        'strong', 'em', 'blockquote']
 
         for e in self.parser.getChildren(node):
             e_tag = self.parser.getTag(e)

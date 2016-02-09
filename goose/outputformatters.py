@@ -42,9 +42,12 @@ class OutputFormatter(object):
         # top node
         self.top_node = None
 
-    def content_html(self):
+    def content_html(self, should_perform_processing=True):
         self.top_node = self.article.top_node
-        self.remove_negativescores_nodes()
+
+        if should_perform_processing:
+            self.remove_negativescores_nodes()
+
         return OutputFormatterCleaner().clean(self.top_node)
 
     def remove_negativescores_nodes(self):
